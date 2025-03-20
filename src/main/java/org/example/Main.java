@@ -5,6 +5,7 @@ import java.util.Scanner;
 public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
+        ExpressionParser parser = new ExpressionParser();
 
         final String helpMessage = """
                                    Available operations: +, -, *, /, ^, %, s (sqrt)
@@ -29,17 +30,13 @@ public class Main {
                     continue;
                 }
 
-                String[] parts = parseExpression(input);
-                if (parts == null || parts.length == 0) {
+                ParsedExpression parsedExpression = parser.parse(input);
+                if (parsedExpression == null) {
                     System.out.println("Invalid format. Type '?' for help.");
                     continue;
                 }
 
-                double number1 = parseNumber(parts[1]);
-                char operation = parts[0].charAt(0);
-                double number2 = parseNumber(parts[2]);
-
-                double result = Calculator.calculate(number1, number2, operation);
+                double result = Calculator.calculate(parsedExpression.getNumber1(), parsedExpression.getNumber2(), parsedExpression.getOperation());
                 System.out.println("Result: " + result);
 
             } catch (Exception e) {
@@ -48,37 +45,4 @@ public class Main {
         }
         scanner.close();
     }
-
-    private static double parseNumber(String input) {
-        String normalized = input.replace(',', '.');
-        return Double.parseDouble(normalized);
-    }
-
-    private static String[] parseExpression(String input) {
-        for (int i = 0; i < input.length(); i++) {
-            char c = input.charAt(i);
-            if ("+-*/^%s".indexOf(c) != -1) {
-                if (i == 0 && (c == '-' || c == '+')) {
-                    continue;
-                }
-                String num1 = input.substring(0, i).trim();
-                String op = String.valueOf(c);
-                String num2 = input.substring(i + 1).trim();
-                if (num1.isEmpty() || num2.isEmpty()) {
-                    return null;
-                }
-                for (int j = 0; j < num2.length(); j++) {
-                    char ch = num2.charAt(j);
-                    if (j == 0 && (ch == '-' || ch == '+')) {
-                        continue;
-                    }
-                    if ("+-*/^%s".indexOf(ch) != -1) {
-                        return null;
-                    }
-                }
-                return new String[]{op, num1, num2};
-            }
-        }
-        return null;
-    }
-} 
+}
