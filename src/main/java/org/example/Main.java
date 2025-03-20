@@ -1,5 +1,6 @@
 package org.example;
 
+import java.math.BigDecimal;
 import java.util.Scanner;
 
 public class Main {
@@ -36,7 +37,7 @@ public class Main {
                     continue;
                 }
 
-                double result = Calculator.calculate(parsedExpression.getNumber1(), parsedExpression.getNumber2(), parsedExpression.getOperation());
+                BigDecimal result = Calculator.calculate(parsedExpression.number1(), parsedExpression.number2(), parsedExpression.operation());
                 System.out.println("Result: " + result);
 
             } catch (Exception e) {
