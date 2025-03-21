@@ -21,10 +21,14 @@ public class ConsoleUI {
     }
 
     public void run() {
-        System.out.println("Welcome to Calculator!");
+        System.out.print("""
+                         ------------------------------------
+                                Welcome to Calculator!
+                         ------------------------------------
+                         """);
         while (true) {
             System.out.println("Enter expression or 'q' to quit:");
-            String input = scanner.nextLine().trim();
+            String input = scanner.nextLine().trim().toLowerCase();
             if (input.equals("q")) break;
             processInput(input);
         }

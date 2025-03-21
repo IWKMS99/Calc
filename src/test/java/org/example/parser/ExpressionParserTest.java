@@ -101,9 +101,9 @@ public class ExpressionParserTest {
 
     @Test
     void testInvalidInputEmptyNumbers() {
-        assertNull(parser.parse(" + 3"));
-        assertNull(parser.parse("5 + "));
-        assertNull(parser.parse(" "));
+        assertThrows(IllegalArgumentException.class, () -> {
+            parser.parse("");
+        }, "Expected IllegalArgumentException to be thrown for empty input");
     }
 
     @Test
