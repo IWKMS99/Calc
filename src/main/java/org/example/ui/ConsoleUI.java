@@ -35,7 +35,7 @@ public class ConsoleUI {
             ParsedExpression expr = parser.parse(input);
             Operation op = OperationFactory.getOperation(expr.operation());
             BigDecimal result = calculator.calculate(expr.number1(), expr.number2(), op);
-            System.out.println("Result: " + result);
+            System.out.println(expr.number1() + " " + op.getSymbol() + " " + expr.number2() + " = " + result);
         } catch (Exception e) {
             System.out.println("Error: " + e.getMessage());
         }
