@@ -12,6 +12,8 @@ public class OperationFactory {
             case '^' -> new Power();
             case '%' -> new Percent();
             case 's' -> new Root();
+            case '>' -> new GreaterThan();
+            case '<' -> new LessThan();
             default -> throw new IllegalArgumentException("Unknown operation: " + symbol);
         };
     }

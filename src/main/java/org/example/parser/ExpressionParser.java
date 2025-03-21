@@ -48,7 +48,7 @@ public class ExpressionParser {
     }
 
     private boolean isOperator(char c) {
-        return "+-*/^%s".indexOf(c) != -1;
+        return "+-*/^%s><".indexOf(c) != -1;
     }
 
     private boolean containsOperator(String input) {
