@@ -1,8 +1,10 @@
 package org.example.parser;
 
+import org.example.core.OperationFactory;
 import org.example.model.ParsedExpression;
 
 import java.math.BigDecimal;
+import java.util.Set;
 
 public class ExpressionParser {
 
@@ -15,7 +17,7 @@ public class ExpressionParser {
         int operatorIndex = findOperatorIndex(trimmedInput);
 
         if (operatorIndex == -1) {
-            return null;
+            throw new IllegalArgumentException("The operator was not found in the expression: " + trimmedInput);
         }
 
         String number1Str = trimmedInput.substring(0, operatorIndex).trim();
@@ -23,11 +25,11 @@ public class ExpressionParser {
         String number2Str = trimmedInput.substring(operatorIndex + 1).trim();
 
         if (number1Str.isEmpty() || number2Str.isEmpty()) {
-            return null;
+            throw new IllegalArgumentException("One of the operands is missing from the expression: " + trimmedInput);
         }
 
-        if (containsOperator(number2Str)) {
-            return null;
+        if (containsOperatorInOperand(number2Str)) {
+            throw new IllegalArgumentException("More than one operator is detected in the expression: " + trimmedInput);
         }
 
         BigDecimal number1 = parseNumber(number1Str);
@@ -38,22 +40,21 @@ public class ExpressionParser {
     }
 
     private int findOperatorIndex(String input) {
+        Set<Character> supportedOperators = OperationFactory.getSupportedOperators();
         for (int i = 0; i < input.length(); i++) {
             char c = input.charAt(i);
-            if (isOperator(c) && !(i == 0 && (c == '-' || c == '+'))) {
+            if (supportedOperators.contains(c) && !(i == 0 && (c == '-' || c == '+'))) {
                 return i;
             }
         }
         return -1;
     }
 
-    private boolean isOperator(char c) {
-        return "+-*/^%s><".indexOf(c) != -1;
-    }
-
-    private boolean containsOperator(String input) {
-        for (char c : input.toCharArray()) {
-            if (isOperator(c) && !(c == '-' || c == '+')) {
+    private boolean containsOperatorInOperand(String input) {
+        Set<Character> supportedOperators = OperationFactory.getSupportedOperators();
+        for (int i = 0; i < input.length(); i++) {
+            char c = input.charAt(i);
+            if (supportedOperators.contains(c) && !(i == 0 && (c == '-' || c == '+'))) {
                 return true;
             }
         }

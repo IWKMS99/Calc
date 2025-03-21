@@ -91,12 +91,14 @@ public class ExpressionParserTest {
 
     @Test
     void testInvalidInputNoOperator() {
-        assertNull(parser.parse("123"));
+        assertThrows(IllegalArgumentException.class, () -> parser.parse("123"),
+                "Expected IllegalArgumentException for input without operator");
     }
 
     @Test
     void testInvalidInputMultipleOperators() {
-        assertNull(parser.parse("5 + 3 * 2"));
+        assertThrows(IllegalArgumentException.class, () -> parser.parse("5 + 3 * 2"),
+                "Expected IllegalArgumentException for input with multiple operators");
     }
 
     @Test
@@ -107,11 +109,17 @@ public class ExpressionParserTest {
     }
 
     @Test
-    void testInvalidInputOperatorAtTheBeginningOrEnd() {
-        assertNull(parser.parse("+ 5")); // Leading plus is handled, so this should pass
-        assertNull(parser.parse("5 +"));
-        assertNull(parser.parse("- 3")); // Leading minus is handled, so this should pass
-        assertNull(parser.parse("3 -"));
+    void testInvalidInputOperatorAtTheEnd() {
+        assertThrows(IllegalArgumentException.class, () -> parser.parse("5 +"),
+                "Expected IllegalArgumentException for operator at the end");
+        assertThrows(IllegalArgumentException.class, () -> parser.parse("3 -"),
+                "Expected IllegalArgumentException for operator at the end");
+    }
+
+    @Test
+    void testInvalidInputOperatorAtTheBeginningWithoutSecondOperand() {
+        assertThrows(IllegalArgumentException.class, () -> parser.parse("+ 5"),
+                "Expected IllegalArgumentException for operator at the beginning without second operand");
     }
 
     @Test
