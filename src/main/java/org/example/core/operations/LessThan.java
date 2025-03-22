@@ -13,4 +13,9 @@ public class LessThan implements Operation {
     public char getSymbol() {
         return '<';
     }
+
+    @Override
+    public String getDescription() {
+        return "Less Than: Checks if the first number is less than the second. Returns 1 if true, 0 if false. Example: 3 < 5 = 1";
+    }
 }

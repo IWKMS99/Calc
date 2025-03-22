@@ -11,4 +11,9 @@ public class Multiply implements Operation {
 
     @Override
     public char getSymbol() { return '*'; }
+
+    @Override
+    public String getDescription() {
+        return "Multiplication: Multiplies two numbers together. Example: 4 * 5 = 20";
+    }
 }

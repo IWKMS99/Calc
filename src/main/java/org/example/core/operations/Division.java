@@ -18,4 +18,9 @@ public class Division implements Operation {
 
     @Override
     public char getSymbol() { return '/'; }
+
+    @Override
+    public String getDescription() {
+        return "Division: Divides the first number by the second. Returns null for division by zero. Example: 10 / 2 = 5";
+    }
 }

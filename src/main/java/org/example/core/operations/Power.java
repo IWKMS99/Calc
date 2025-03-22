@@ -28,4 +28,9 @@ public class Power implements Operation {
 
     @Override
     public char getSymbol() { return '^'; }
+
+    @Override
+    public String getDescription() {
+        return "Power: Raises the first number to the power of the second number. Example: 2 ^ 3 = 8";
+    }
 }

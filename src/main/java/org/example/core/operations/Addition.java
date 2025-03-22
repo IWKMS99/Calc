@@ -11,4 +11,9 @@ public class Addition implements Operation {
 
     @Override
     public char getSymbol() { return '+'; }
+
+    @Override
+    public String getDescription() {
+        return "Addition: Adds two numbers together. Example: 5 + 3 = 8";
+    }
 }

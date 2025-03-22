@@ -11,4 +11,9 @@ public class Subtract implements Operation {
 
     @Override
     public char getSymbol() { return '-'; }
+
+    @Override
+    public String getDescription() {
+        return "Subtraction: Subtracts the second number from the first. Example: 8 - 3 = 5";
+    }
 }

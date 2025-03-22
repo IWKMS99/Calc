@@ -13,4 +13,9 @@ public class GreaterThan implements Operation {
     public char getSymbol() {
         return '>';
     }
+
+    @Override
+    public String getDescription() {
+        return "Greater Than: Checks if the first number is greater than the second. Returns 1 if true, 0 if false. Example: 5 > 3 = 1";
+    }
 }

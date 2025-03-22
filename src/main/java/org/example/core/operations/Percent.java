@@ -15,4 +15,9 @@ public class Percent implements Operation {
 
     @Override
     public char getSymbol() { return '%'; }
+
+    @Override
+    public String getDescription() {
+        return "Percent: Calculates the specified percentage of a number. Example: 200 % 10 = 20 (10% of 200)";
+    }
 }

@@ -38,4 +38,9 @@ public class Root implements Operation {
 
     @Override
     public char getSymbol() { return 's'; }
+
+    @Override
+    public String getDescription() {
+        return "Root: Calculates the nth root of a number. The first number is the base, the second is the root degree. Example: 27 s 3 = 3 (cube root of 27)";
+    }
 }
