@@ -1,24 +1,28 @@
 package org.example.ui;
 
-import org.example.core.Calculator;
 import org.example.core.OperationFactory;
 import org.example.core.Operation;
-import org.example.model.ParsedExpression;
-import org.example.parser.ExpressionParser;
+import org.example.dto.Token;
+import org.example.parser.PostfixEvaluator;
+import org.example.parser.ShuntingYardConverter;
+import org.example.parser.Tokenizer;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
 
 public class ConsoleUI {
-    private final Calculator calculator;
-    private final ExpressionParser parser;
     private final Scanner scanner;
+    private final Tokenizer tokenizer;
+    private final ShuntingYardConverter converter;
+    private final PostfixEvaluator evaluator;
 
     public ConsoleUI() {
-        this.calculator = new Calculator();
-        this.parser = new ExpressionParser();
         this.scanner = new Scanner(System.in);
+        this.tokenizer = new Tokenizer();
+        this.converter = new ShuntingYardConverter();
+        this.evaluator = new PostfixEvaluator();
     }
 
     public void run() {
@@ -46,15 +50,15 @@ public class ConsoleUI {
                                Available operations:
                          """);
 
-        Set<Character> operators = OperationFactory.getSupportedOperators();
-        for (char symbol : operators) {
+        Set<String> operators = OperationFactory.getSupportedOperators();
+        for (String symbol : operators) {
             String description = getOperationDescription(symbol);
             System.out.println(" " + symbol + " - " + description);
         }
-        System.out.println("\nUsage: <number1> <operator> <number2>\n");
+        System.out.println("\nUsage: Enter a mathematical expression (e.g., 2 + 3 * 4, (5 - 2) / 3)\n");
     }
 
-    private String getOperationDescription(char symbol) {
+    private String getOperationDescription(String symbol) {
         Operation operation = OperationFactory.getOperation(symbol);
         if (operation != null) {
             return operation.getDescription();
@@ -64,12 +68,16 @@ public class ConsoleUI {
 
     private void processInput(String input) {
         try {
-            ParsedExpression expr = parser.parse(input);
-            Operation op = OperationFactory.getOperation(expr.operation());
-            BigDecimal result = calculator.calculate(expr.number1(), expr.number2(), op);
-            System.out.println(expr.number1() + " " + op.getSymbol() + " " + expr.number2() + " = " + result);
+            List<Token> tokens = tokenizer.tokenize(input);
+            List<Token> postfixTokens = converter.convertToPostfix(tokens);
+            BigDecimal result = evaluator.evaluate(postfixTokens);
+            System.out.println("Result: " + result);
+        } catch (IllegalArgumentException e) {
+            System.out.println("Invalid input: " + e.getMessage());
+        } catch (ArithmeticException e) {
+            System.out.println("Arithmetic error: " + e.getMessage());
         } catch (Exception e) {
-            System.out.println("Error: " + e.getMessage());
+            System.out.println("Unexpected error: " + e.getMessage());
         }
     }
 }

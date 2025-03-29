@@ -9,25 +9,27 @@ import java.util.Set;
 import java.util.function.Supplier;
 
 public class OperationFactory {
-    private static final Map<Character, Supplier<Operation>> OPERATIONS = new HashMap<>();
+    private static final Map<String, Supplier<Operation>> OPERATIONS = new HashMap<>();
+    private static final Map<String, Integer> OPERATOR_PRECEDENCE = new HashMap<>();
 
     static {
-        register('+', Addition::new);
-        register('-', Subtract::new);
-        register('*', Multiply::new);
-        register('/', Division::new);
-        register('^', Power::new);
-        register('%', Percent::new);
-        register('s', Root::new);
-        register('>', GreaterThan::new);
-        register('<', LessThan::new);
+        register("+", Addition::new, 2);
+        register("-", Subtract::new, 2);
+        register("*", Multiply::new, 3);
+        register("/", Division::new, 3);
+        register("^", Power::new, 4);
+        register("%", Percent::new, 3);
+        register("s", Root::new, 4);
+        register(">", GreaterThan::new, 1);
+        register("<", LessThan::new, 1);
     }
 
-    private static void register(char symbol, Supplier<Operation> operationSupplier) {
+    private static void register(String symbol, Supplier<Operation> operationSupplier, int precedence) {
         OPERATIONS.put(symbol, operationSupplier);
+        OPERATOR_PRECEDENCE.put(symbol, precedence);
     }
 
-    public static Operation getOperation(char symbol) {
+    public static Operation getOperation(String symbol) {
         Supplier<Operation> supplier = OPERATIONS.get(symbol);
         if (supplier == null) {
             throw new IllegalArgumentException("Unknown operation: " + symbol);
@@ -35,11 +37,15 @@ public class OperationFactory {
         return supplier.get();
     }
 
-    public static Set<Character> getSupportedOperators() {
+    public static Set<String> getSupportedOperators() {
         return Collections.unmodifiableSet(OPERATIONS.keySet());
     }
 
-    public static boolean isOperationSupported(char symbol) {
+    public static boolean isOperationSupported(String symbol) {
         return OPERATIONS.containsKey(symbol);
+    }
+
+    public static int getPrecedence(String symbol) {
+        return OPERATOR_PRECEDENCE.get(symbol);
     }
 }

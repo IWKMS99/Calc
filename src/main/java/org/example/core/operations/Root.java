@@ -37,7 +37,7 @@ public class Root implements Operation {
     }
 
     @Override
-    public char getSymbol() { return 's'; }
+    public String getSymbol() { return "s"; }
 
     @Override
     public String getDescription() {
