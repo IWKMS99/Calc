@@ -10,10 +10,13 @@ public class Division implements Operation {
     @Override
     public BigDecimal apply(BigDecimal number1, BigDecimal number2) {
         if (number2.compareTo(BigDecimal.ZERO) == 0) {
-            System.out.println("Division by zero is not allowed!");
-            return null;
+            throw new ArithmeticException("Division by zero is not allowed!");
         }
-        return number1.divide(number2, SCALE, ROUNDING_MODE);
+        try {
+            return number1.divide(number2, SCALE, ROUNDING_MODE);
+        } catch (ArithmeticException e) {
+            throw new ArithmeticException("Error during division: " + e.getMessage());
+        }
     }
 
     @Override

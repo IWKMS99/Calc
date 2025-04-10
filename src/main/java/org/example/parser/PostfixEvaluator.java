@@ -12,27 +12,37 @@ import java.util.Stack;
 public class PostfixEvaluator {
     public BigDecimal evaluate(List<Token> postfixTokens) {
         Stack<BigDecimal> operandStack = new Stack<>();
+
         for (Token token : postfixTokens) {
             if (token.type() == Type.NUMBER) {
-                operandStack.push(new BigDecimal(token.value().replace(',', '.')));
+                try {
+                    operandStack.push(new BigDecimal(token.value()));
+                } catch (NumberFormatException e) {
+                    throw new IllegalArgumentException("Invalid number format in token: " + token.value(), e);
+                }
             } else if (token.type() == Type.OPERATOR) {
                 if (operandStack.size() < 2) {
-                    throw new IllegalArgumentException("Incorrect postfix expression: there are not enough operands for the operator " + token.value());
+                    throw new IllegalArgumentException("Incorrect postfix expression: not enough operands for operator '" + token.value() + "'");
                 }
+
                 BigDecimal operand2 = operandStack.pop();
                 BigDecimal operand1 = operandStack.pop();
-                try {
-                    Operation operation = getOperation(token.value());
-                    BigDecimal result = operation.apply(operand1, operand2); // Используем метод apply напрямую
-                    operandStack.push(result);
-                } catch (ArithmeticException e) {
-                    throw new ArithmeticException("Error when performing the operation " + token.value() + ": " + e.getMessage());
+
+                Operation operation = getOperation(token.value());
+                BigDecimal result = operation.apply(operand1, operand2);
+
+                if (result == null) {
+                    throw new IllegalStateException("Operation " + token.value() + " unexpectedly returned null.");
                 }
+                operandStack.push(result);
+
+            } else {
+                throw new IllegalArgumentException("Unexpected token type in postfix expression: " + token.type());
             }
         }
 
         if (operandStack.size() != 1) {
-            throw new IllegalArgumentException("Incorrect postfix expression: there is more than one value left in the stack.");
+            throw new IllegalArgumentException("Incorrect postfix expression: " + operandStack.size() + " values left on stack instead of 1.");
         }
 
         return operandStack.pop();

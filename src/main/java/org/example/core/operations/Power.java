@@ -9,22 +9,26 @@ import static org.example.config.Config.SCALE;
 public class Power implements Operation {
     @Override
     public BigDecimal apply(BigDecimal number1, BigDecimal number2) {
+        double baseDouble = number1.doubleValue();
+        double exponentDouble;
         try {
-            double baseDouble = number1.doubleValue();
-            double exponentDouble = number2.doubleValue();
-            double result = Math.pow(baseDouble, exponentDouble);
-
-            if (Double.isNaN(result) || Double.isInfinite(result)) {
-                System.out.println("Invalid power operation");
-                return null;
-            }
-
-            return new BigDecimal(result).setScale(SCALE, ROUNDING_MODE);
+            exponentDouble = number2.doubleValue();
+        } catch (ArithmeticException e) {
+            throw new ArithmeticException("Exponent too large or not exact for power operation: " + number2);
         } catch (NumberFormatException e) {
-            System.out.println("Invalid input for power operation");
-            return null;
+            throw new ArithmeticException("Invalid input for power operation");
         }
+
+
+        double result = Math.pow(baseDouble, exponentDouble);
+
+        if (Double.isNaN(result) || Double.isInfinite(result)) {
+            throw new ArithmeticException("Invalid power operation result (NaN or Infinity) for " + number1 + " ^ " + number2);
+        }
+
+        return new BigDecimal(result).setScale(SCALE, ROUNDING_MODE);
     }
+
 
     @Override
     public String getSymbol() { return "^"; }

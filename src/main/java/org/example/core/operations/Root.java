@@ -10,30 +10,44 @@ public class Root implements Operation {
     @Override
     public BigDecimal apply(BigDecimal number1, BigDecimal number2) {
         if (number2.compareTo(BigDecimal.ZERO) == 0) {
-            System.out.println("Root of degree zero is not allowed!");
-            return null;
+            throw new ArithmeticException("Root of degree zero is not allowed!");
         }
 
+        double numberDouble = number1.doubleValue();
+        double rootDegreeDouble = getRootDegreeDouble(number2, numberDouble);
+
+        double result;
+        if (numberDouble < 0) {
+            result = -Math.pow(-numberDouble, 1.0 / rootDegreeDouble);
+        } else {
+            result = Math.pow(numberDouble, 1.0 / rootDegreeDouble);
+        }
+
+        if (Double.isNaN(result) || Double.isInfinite(result)) {
+            throw new ArithmeticException("Invalid root operation result (NaN or Infinity) for " + number1 + " s " + number2);
+        }
+
+        return new BigDecimal(result).setScale(SCALE, ROUNDING_MODE);
+    }
+
+    private static double getRootDegreeDouble(BigDecimal number2, double numberDouble) {
+        double rootDegreeDouble;
         try {
-            double numberDouble = number1.doubleValue();
-            double rootDegreeDouble = number2.doubleValue();
-
-            if (numberDouble < 0) {
-                if (rootDegreeDouble % 2 == 0) {
-                    System.out.println("Even root of negative number is not allowed!");
-                    return null;
-                }
-                double result = -Math.pow(-numberDouble, 1.0 / rootDegreeDouble);
-                return new BigDecimal(result).setScale(SCALE, ROUNDING_MODE);
+            rootDegreeDouble = number2.doubleValue();
+            if (rootDegreeDouble == 0) {
+                throw new ArithmeticException("Root of degree zero is not allowed!");
             }
-
-            double result = Math.pow(numberDouble, 1.0 / rootDegreeDouble);
-            return new BigDecimal(result).setScale(SCALE, ROUNDING_MODE);
-
+        } catch (ArithmeticException e) {
+            throw new ArithmeticException("Root degree too large or not exact: " + number2);
         } catch (NumberFormatException e) {
-            System.out.println("Invalid input for root operation");
-            return null;
+            throw new ArithmeticException("Invalid input for root operation");
         }
+
+
+        if (numberDouble < 0 && rootDegreeDouble % 2 == 0) {
+            throw new ArithmeticException("Even root of a negative number is not allowed!");
+        }
+        return rootDegreeDouble;
     }
 
     @Override
