@@ -1,40 +1,29 @@
 package org.example.ui;
 
-// Убрана аннотация Lombok, конструктор написан явно для DI
 import org.example.core.Operation;
 import org.example.core.OperationFactory;
-import org.example.dto.Token;
-import org.example.parser.PostfixEvaluator;
-import org.example.parser.ShuntingYardConverter;
-import org.example.parser.Tokenizer;
+import org.example.engine.CalculatorEngine;
 
 import java.math.BigDecimal;
-import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
 
 public class ConsoleUI {
     private final Scanner scanner;
-    private final Tokenizer tokenizer;
-    private final ShuntingYardConverter converter;
-    private final PostfixEvaluator evaluator;
     private final OperationFactory operationFactory;
+    private final CalculatorEngine engine; // Add CalculatorEngine field
 
-    public ConsoleUI(Scanner scanner, Tokenizer tokenizer, ShuntingYardConverter converter, PostfixEvaluator evaluator, OperationFactory operationFactory) {
+    public ConsoleUI(Scanner scanner, OperationFactory operationFactory, CalculatorEngine engine) {
         this.scanner = scanner;
-        this.tokenizer = tokenizer;
-        this.converter = converter;
-        this.evaluator = evaluator;
         this.operationFactory = operationFactory;
+        this.engine = engine;
     }
 
     public static ConsoleUI createDefault() {
         return new ConsoleUI(
                 new Scanner(System.in),
-                new Tokenizer(),
-                new ShuntingYardConverter(),
-                new PostfixEvaluator(),
-                new OperationFactory()
+                new OperationFactory(),
+                new CalculatorEngine()
         );
     }
 
@@ -85,9 +74,7 @@ public class ConsoleUI {
 
     private void processInput(String input) {
         try {
-            List<Token> tokens = tokenizer.tokenize(input);
-            List<Token> postfixTokens = converter.convertToPostfix(tokens);
-            BigDecimal result = evaluator.evaluate(postfixTokens);
+            BigDecimal result = engine.evaluate(input);
             System.out.println("Result: " + result);
         } catch (IllegalArgumentException e) {
             System.err.println("Error: Invalid input -> " + e.getMessage());

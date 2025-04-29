@@ -6,12 +6,13 @@ import org.example.core.Operation;
 import static org.example.core.OperationFactory.getOperation;
 
 import java.math.BigDecimal;
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.List;
-import java.util.Stack;
 
 public class PostfixEvaluator {
     public BigDecimal evaluate(List<Token> postfixTokens) {
-        Stack<BigDecimal> operandStack = new Stack<>();
+        Deque<BigDecimal> operandStack = new ArrayDeque<>();
 
         for (Token token : postfixTokens) {
             if (token.type() == Type.NUMBER) {

@@ -10,7 +10,7 @@ import static org.example.core.OperationFactory.getPrecedence;
 public class ShuntingYardConverter {
     public List<Token> convertToPostfix(List<Token> tokens) {
         Queue<Token> outputQueue = new LinkedList<>();
-        Stack<Token> operatorStack = new Stack<>();
+        Deque<Token> operatorStack = new ArrayDeque<>();
 
         for (Token token : tokens) {
             if (token.type() == Type.NUMBER) {
